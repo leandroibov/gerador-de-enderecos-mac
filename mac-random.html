@@ -23,17 +23,24 @@
     </style>
 </head>
 <body>
-    <h1>Gerador de Endereços MAC Failsafe (sem rastros)</h1>
-    <h2>Para mac spoofing e antifingerprint</h2>
-    <p>Abra essa página html com o script mullvad-ram ou mullvad-ram-jail2 (com firejail, + seguro) que será executado na pasta /dev/shm da memória compartilhada no linux!:<p>
-    <p>O mullvad Browser deve estar instalado em ~/Downloads/mullvad-browser</p>
-    <p>Em configurações ou copie para a barra de navegação about:preferences, vá em network settings, e coloque um proxy falso, como 127.0.0.4 e porta 22345 para socks5 (certifique que não existe). Isso bloqueará a conexão com a internet por segurança! Teste antes!</p>
-    <p>Copie e cole a localização do arquivo na barra do navegador para abrir. Ex: file:///home/seu_usuário/Downloads/mac-random.html</p>
-    <p>Digitando file:///home/ na barra de navegação, você poderá navegar até o arquivo mac-random.html onde você salvou!</p>
-    <p>No fim da página, você tem uma lista de mac vendors para escolher e copiar e colar para gerar a lista de macs na caixa de diálogo abaixo!</p>
-    <p>Os mac spoofados e gerados não podem ser gravados em arquivos para neutralizar os ataques físicos forenses!</p>
-    <p>Opção 2: Abra o arquivo mac-random.html em um sistema amnésico como o Tails em pc separado e ao desligar o Tails, tudo desaparece da memória RAM!<p>
-    <p>Depois de terminar, ao desligar o mullvad browser, tudo desaparecerá na memória ram!</p>
+
+<h1>Gerador de Endereços MAC Failsafe (sem rastros)</h1>
+<h2>Para mac spoofing e antifingerprint sem deixar rastros e impedir a coleta dos dados do navegador se ele estiver hackeado!</h2>
+<p>Instale o <a href="https://mullvad.net/en/download/browser/linux">mullvad-browser</a>. Ele deve estar instalado em ~/Downloads/mullvad-browser.</p>
+<p><a href="https://github.com/leandroibov/gerador-de-enderecos-mac">Faça download da página mac-random.html e grave em ~/Downloads/</a></p>
+<p>Instale o firejail no Linux: <code>sudo apt install firejail -y</code>.</p>
+<p>Abra essa página rodando o script <a href="https://github.com/leandroibov/mullvad-browser-firejail-anti-forense/blob/main/mullvad-mac-ram">mullvad-mac-ram</a> (com firejail, bloqueando a internet e abrindo mac-random.html em failsafe), que será executado na pasta /dev/shm da memória compartilhada (failsafe) no Linux!</p>
+<p>Remova a extensão ublock em about:addons para o java script gerador de macs funcionar!</p>
+<p>Sem o firejail (menos seguro), rode o script em um ambiente offline, como o Tails Linux SO, sem internet!</p>
+<p>Digitando <code>file:///home/</code> na barra de navegação, você poderá navegar até o arquivo mac-random.html onde você salvou. No entanto, o script <code>mullvad-mac-ram</code> copia tudo para /dev/shm para rodar tudo em failsafe!</p>
+<p>No fim da página, você terá uma lista de mac vendors para escolher, copiar e colar para gerar a lista de MACs na caixa de diálogo abaixo! Clique no botão "Gerar Endereços MAC" e use o MAC que desejar!</p>
+<p>Os MACs spoofados e gerados não podem ser gravados em arquivos e neutralizam os ataques físicos forenses de recuperação de dados e metadados!</p>
+<p>Você deve cadastrar esses MACs ao rodar o script <a href="https://github.com/leandroibov/tor-browser-firejail-sandbox/blob/main/tor-ram-jail1">tor-ram-jail1</a> ou <a href="https://github.com/leandroibov/tor-browser-firejail-sandbox/blob/main/tor-ram-jail2">tor-ram-jail2</a>, que aniquila os metadados de bridges e MACs das conexões com o Tor Browser no Linux, gerando mais anonimidade e segurança, (similar ao Tails Linux).</p>
+<p>Os MACs spoofados gerados não podem ser interceptados, enviados para algum servidor e guardados por um navegador hackeado, com keylogger, etc., porque enjaulamos um novo Mullvad Browser, bloqueando toda a conexão com a internet e tudo rodando 100% na memória RAM, que não salvará nada no HD após terminar de usar o script <a href="https://github.com/leandroibov/mullvad-browser-firejail-anti-forense/blob/main/mullvad-mac-ram">mullvad-mac-ram</a></p>
+<p>Depois de terminar, ao desligar o Mullvad Browser, tudo desaparecerá na memória RAM!</p>
+
+
+
     <p> <a href="#x1">Pesquisar na lista de mac vendors para gerar lista de macs!</a></p>
     <p> <a href="https://traderprofissional.com.br/seguranca-digital.aspx">Tudo sobre privacidade na internet!</a></p>
 
