@@ -1,9 +1,5 @@
 Gerador de Endereços MAC Failsafe (sem rastros)
 
-8e28dbfcd283bfaa284f2e0d4f3ffecf09262d6511efa975a45402b26be60a69  mac-random.html
-
-
-
 
 
 (mac address generator)
