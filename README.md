@@ -31,8 +31,23 @@
 >
 >
 >Opção 2: Abra o arquivo mac-random.html em um sistema amnésico como o Tails em pc separado e ao desligar o Tails, tudo desaparece da memória RAM!
->
->
+
+## Versão de MAC spoofing de fabricante por categoria
+`Marcas selecionadas mais famosas e importantes para roteadores, smartphones, laptops, PCs e videogames.`
+
+Focado em gerar listas para automatizar MAC spoofing em roteadores com OpenWrt, servidores ou PCs normais!
+
+Precisa criar programa adicional para usar a lista criada e programar o MAC spoofing intermitente conforme a necessidade do usuário!
+
+#### Lista Completa por Categorias
+- routers-mac-list-generator.html
+- games-mac-list-generator.html
+- laptops-pc-mac-list-generator.html
+- smartphone-mac-list-generator.html
+
+`Todas as categorias com essas marcas juntas`
+- all-mac-list-generator.html
+
 
 ## Versão que fica online em meu site:
 
