@@ -28,14 +28,13 @@ Faça download de `mac-random.html` para `~/Downloads/mac-random.html` no seu Li
 ### Passo 3: Abra o Arquivo
 Copie e cole a localização do arquivo na barra do navegador para abrir:
 
-`
-Ex: file:///home/seu_usuário/Downloads/mac-random.htmlDigitando file:///home/ na barra de navegação, você poderá navegar até o arquivo mac-random.html onde você salvou!Na parte inferior da página, você tem uma lista de MAC vendors para escolher, copiar e colar para gerar a lista de MACs na caixa de diálogo.🔒 Privacidade e Segurança
+
+Ex: file:///home/seu_usuário/Downloads/mac-random.htmlDigitando file:///home/ na barra de navegação, você poderá navegar até o arquivo mac-random.html onde você salvou! Na parte inferior da página, você tem uma lista de MAC vendors para escolher, copiar e colar para gerar a lista de MACs na caixa de diálogo.🔒 Privacidade e Segurança
 Os MAC spoofados e gerados não são gravados em arquivos no PC para neutralizar ataques físicos forenses.
 Ao fechar o Mullvad, a geração de MACs não foi registrada no PC, impedindo a recuperação dos metadados.
 
 Opção 2: Sistema Amnésico
 Abra o arquivo mac-random.html em um sistema amnésico como o Tails em PC separado. Ao desligar o Tails, tudo desaparece da memória RAM!
-`
 
 ## Versão de MAC spoofing de fabricante por categoria
 `Marcas selecionadas mais famosas e importantes para roteadores, smartphones, laptops, PCs e videogames.`
