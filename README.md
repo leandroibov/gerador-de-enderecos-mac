@@ -40,6 +40,7 @@ Os MAC spoofados e gerados não são gravados em arquivos no PC para neutralizar
 Ao fechar o Mullvad, a geração de MACs não foi registrada no PC, impedindo a recuperação dos metadados.
 
 Opção 2: Sistema Amnésico
+
 Abra o arquivo mac-random.html em um sistema amnésico como o Tails em PC separado. Ao desligar o Tails, tudo desaparece da memória RAM!
 
 ## Versão de MAC spoofing de fabricante por categoria
