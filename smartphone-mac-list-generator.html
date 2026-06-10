@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAC Generator → Best Smartphones Brand</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --panel: #111418;
+    --border: #1e2530;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --text: #c8d8e8;
+    --muted: #4a5568;
+    --green: #00ff88;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  /* grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  header h1 span { color: var(--accent); }
+  header p {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media(max-width:640px){ .grid{ grid-template-columns:1fr; } }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Search */
+  .search-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  input[type=text], input[type=number] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 3px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus, input[type=number]:focus {
+    border-color: var(--accent);
+  }
+
+  /* Vendor list */
+  #vendor-list {
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .vendor-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.1s;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+  }
+  .vendor-item:hover { background: rgba(0,229,255,0.06); }
+  .vendor-item.selected { background: rgba(0,229,255,0.1); }
+  .vendor-prefix {
+    color: var(--accent);
+    min-width: 80px;
+  }
+  .vendor-name { color: var(--text); }
+  .checkmark {
+    margin-left: auto;
+    color: var(--green);
+    font-size: 0.9rem;
+    opacity: 0;
+  }
+  .vendor-item.selected .checkmark { opacity: 1; }
+
+  /* Pool */
+  #pool-list {
+    min-height: 60px;
+    max-height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .pool-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 3px;
+    padding: 0.25rem 0.5rem;
+    margin: 0.2rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+  .pool-tag button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 0;
+  }
+  .pool-tag button:hover { color: var(--accent2); }
+
+  .empty-pool {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding: 0.5rem;
+  }
+
+  /* Quantity */
+  .qty-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .qty-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .qty-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.08); }
+
+  .custom-qty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .custom-qty label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  input[type=number] { width: 100px; }
+
+  /* Generate button */
+  .btn-generate {
+    width: 100%;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 0.75rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.75rem;
+    text-transform: uppercase;
+  }
+  .btn-generate:hover { opacity: 0.85; }
+  .btn-generate:active { transform: scale(0.99); }
+  .btn-generate:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Output */
+  .output-panel {
+    margin-top: 1.5rem;
+    display: none;
+  }
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .output-stats {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .output-stats span { color: var(--green); }
+
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--green);
+    color: #000;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn-copy:hover { opacity: 0.85; }
+  .btn-copy.copied {
+    background: var(--accent2);
+  }
+
+  #mac-output {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text);
+    height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  /* Instructions */
+  .instructions {
+    margin-top: 1.5rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .instructions h3 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+  }
+  .step-num {
+    font-family: var(--mono);
+    color: var(--accent2);
+    min-width: 1.5rem;
+    font-size: 0.8rem;
+  }
+  .step code {
+    font-family: var(--mono);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  .step p { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>MAC Generator <span>→ Smartphones</span></h1>
+    <p>// generate vendor mac lists for /etc/config/data-macs on OpenWrt</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT: Vendor picker -->
+    <div class="panel">
+      <div class="panel-title">01 — vendor database</div>
+      <div class="search-row">
+        <input type="text" id="vendor-search" placeholder="filter vendors... (apple, samsung, intel...)" oninput="filterVendors()">
+      </div>
+      <div id="vendor-list"></div>
+    </div>
+
+    <!-- RIGHT: Pool + Quantity + Generate -->
+    <div>
+      <div class="panel" style="margin-bottom:1rem">
+        <div class="panel-title">02 — selected pool</div>
+        <div id="pool-list">
+          <div class="empty-pool">no vendors selected — click vendors on the left</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">03 — quantity</div>
+        <div class="qty-row">
+          <button class="qty-btn" onclick="setQty(50,this)">50</button>
+          <button class="qty-btn active" onclick="setQty(100,this)">100</button>
+          <button class="qty-btn" onclick="setQty(200,this)">200</button>
+          <button class="qty-btn" onclick="setQty(500,this)">500</button>
+          <button class="qty-btn" onclick="setQty(1000,this)">1000</button>
+        </div>
+        <div class="custom-qty">
+          <label>custom:</label>
+          <input type="number" id="custom-qty" min="1" max="9999" placeholder="e.g. 300" oninput="setCustomQty()">
+        </div>
+
+        <button class="btn-generate" onclick="generate()">⚡ Generate MACs</button>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- Output -->
+  <div class="output-panel" id="output-panel">
+    <div class="output-header">
+      <div class="output-stats">generated: <span id="stat-count">0</span> MACs — <span id="stat-vendors">0</span> vendors</div>
+      <button class="btn-copy" id="copy-btn" onclick="copyToClipboard()">
+        📋 Copy all — paste into data-macs
+      </button>
+    </div>
+    <div id="mac-output"></div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="instructions">
+    <h3>// how to use</h3>
+    <div class="step">
+      <div class="step-num">1.</div>
+      <p>Select vendors from the list, set quantity, click <strong>Generate MACs</strong>.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2.</div>
+      <p>Click <strong>Copy all</strong> to copy the MAC list to clipboard.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3.</div>
+<p>Choose a file to paste for a MAC list: <code>or</code> select one MAC address, copy it, and paste it elsewhere to perform MAC spoofing with macchanger or manually using other tools.</p>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Vendor Database ─────────────────────────────────────────
+// To add more: push { p: "XX:XX:XX", n: "VENDOR NAME" } to VENDORS
+const VENDORS = [
+  { p:"00:25:00", n:"APPLE INC." },
+  { p:"00:1E:C2", n:"APPLE" },
+  { p:"00:1F:5B", n:"APPLE" },
+  { p:"00:23:12", n:"APPLE" },
+  { p:"00:23:32", n:"APPLE" },
+  { p:"00:23:DF", n:"APPLE" },
+  { p:"00:24:36", n:"APPLE" },
+  { p:"00:25:00", n:"APPLE INC." },
+  { p:"00:25:BC", n:"APPLE" },
+  { p:"00:26:08", n:"APPLE" },
+  { p:"00:26:4A", n:"APPLE" },
+  { p:"00:26:BB", n:"APPLE" },
+  { p:"00:27:6C", n:"APPLE" },
+  { p:"F8:1E:DF", n:"APPLE INC." },
+  { p:"A4:5E:60", n:"APPLE INC." },
+  { p:"58:CB:52", n:"APPLE INC." },
+  { p:"78:CA:39", n:"APPLE" },
+  { p:"04:0C:CE", n:"APPLE" },
+  { p:"70:56:81", n:"APPLE" },
+  { p:"00:1D:4F", n:"APPLE" },
+  { p:"00:1E:C2", n:"APPLE" },
+  { p:"00:22:41", n:"APPLE" },
+  { p:"00:24:36", n:"APPLE" },
+  { p:"3C:D0:F8", n:"APPLE" },
+  { p:"8C:2D:AA", n:"APPLE" },
+  { p:"04:4C:EF", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"00:21:EC", n:"SAMSUNG ELECTRONICS" },
+  { p:"00:23:A9", n:"SAMSUNG ELECTRONICS" },
+  { p:"00:24:54", n:"SAMSUNG ELECTRONICS CO., LTD" },
+  { p:"28:D2:44", n:"SAMSUNG ELECTRONICS" },
+  { p:"3C:77:E6", n:"SAMSUNG ELECTRONICS" },
+  { p:"44:1E:A1", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"58:1F:AA", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"64:31:50", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"64:9B:E2", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"68:A8:6D", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"70:B3:D5", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"78:3E:53", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"7C:11:BE", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"84:2F:75", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"88:C6:63", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"8C:45:00", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"90:1B:0E", n:"SAMSUNG ELECTRONICS CO.,LTD" },
+  { p:"A8:5B:78", n:"SAMSUNG ELECTRONICS" },
+  { p:"00:0F:53", n:"NOKIA" },
+  { p:"00:13:BC", n:"NOKIA DANMARK A/S" },
+  { p:"00:17:4B", n:"NOKIA DANMARK A/S" },
+  { p:"00:1A:16", n:"NOKIA DANMARK A/S" },
+  { p:"00:1E:3A", n:"NOKIA DANMARK A/S" },
+  { p:"00:1F:00", n:"NOKIA DANMARK A/S" },
+  { p:"00:21:08", n:"NOKIA DANMARK A/S" },
+  { p:"00:21:09", n:"NOKIA DANMARK A/S" },
+  { p:"00:22:FC", n:"NOKIA DANMARK A/S" },
+  { p:"00:22:FD", n:"NOKIA DANMARK A/S" },
+  { p:"00:23:4D", n:"NOKIA DANMARK A/S" },
+  { p:"00:23:4E", n:"NOKIA DANMARK A/S" },
+  { p:"00:24:03", n:"NOKIA DANMARK A/S" },
+  { p:"00:24:04", n:"NOKIA DANMARK A/S" },
+  { p:"00:25:47", n:"NOKIA DANMARK A/S" },
+  { p:"00:25:48", n:"NOKIA DANMARK A/S" },
+  { p:"0C:96:BF", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"10:47:80", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"14:2D:27", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"28:6E:D4", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"34:6B:D3", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"38:59:F9", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"40:4A:03", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"48:46:FB", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"50:46:5D", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"54:39:DF", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"5C:4C:A9", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"60:DE:44", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"70:72:3C", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"78:1D:BA", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"88:51:FB", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"A4:99:47", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"B4:15:13", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"C4:05:28", n:"HUAWEI TECHNOLOGIES CO.,LTD" },
+  { p:"00:23:76", n:"HTC CORPORATION" },
+  { p:"08:F1:B7", n:"HTC CORPORATION" },
+  { p:"38:E7:D8", n:"HTC CORPORATION" },
+  { p:"50:2E:5C", n:"HTC CORPORATION" },
+  { p:"64:17:F4", n:"HTC CORPORATION" },
+  { p:"78:4B:87", n:"HTC CORPORATION" },
+  { p:"88:2C:9A", n:"HTC CORPORATION" },
+  { p:"8C:46:D3", n:"HTC CORPORATION" },
+  { p:"98:0C:82", n:"HTC CORPORATION" },
+  { p:"A0:3B:1B", n:"HTC CORPORATION" },
+  { p:"C4:7D:FE", n:"HTC CORPORATION" },
+  { p:"D4:20:6D", n:"HTC CORPORATION" },
+  { p:"00:22:E9", n:"SONY ERICSSON MOBILE COMMUNICATIONS AB" },
+  { p:"00:23:45", n:"SONY ERICSSON MOBILE COMMUNICATIONS" },
+  { p:"00:25:E7", n:"SONY ERICSSON MOBILE COMMUNICATIONS" },
+  { p:"04:02:1F", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"14:1B:BD", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"1C:7B:21", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"20:54:76", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"30:A8:DB", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"3C:A3:08", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"58:17:0C", n:"SONY ERICSSON MOBILE COMMUNICATIONS AB" },
+  { p:"5C:B5:24", n:"SONY ERICSSON MOBILE COMMUNICATIONS AB" },
+  { p:"70:58:12", n:"SONY MOBILE COMMUNICATIONS AB" },
+  { p:"90:C1:15", n:"SONY ERICSSON MOBILE COMMUNICATIONS AB" },
+  { p:"B8:F9:34", n:"SONY ERICSSON MOBILE COMMUNICATIONS AB" },
+  { p:"00:0A:F5", n:"LG ELECTRONICS" },
+  { p:"00:17:D5", n:"SAMSUNG ELECTRONICS CO., LTD." },
+  { p:"00:1C:F5", n:"LG ELECTRONICS" },
+  { p:"08:02:11", n:"LG ELECTRONICS" },
+  { p:"10:6F:3F", n:"LG ELECTRONICS" },
+  { p:"14:AF:01", n:"LG ELECTRONICS" },
+  { p:"24:A4:3C", n:"LG ELECTRONICS" },
+  { p:"2C:33:7A", n:"LG ELECTRONICS" },
+  { p:"38:2C:4A", n:"LG ELECTRONICS" },
+  { p:"40:F4:EC", n:"LG ELECTRONICS" },
+  { p:"44:39:C4", n:"LG ELECTRONICS" },
+  { p:"50:1A:C5", n:"LG ELECTRONICS" },
+  { p:"60:57:18", n:"LG ELECTRONICS" },
+  { p:"6C:50:4D", n:"LG ELECTRONICS" },
+  { p:"90:2E:6A", n:"LG ELECTRONICS" },
+  { p:"98:93:CC", n:"LG ELECTRONICS" },
+  { p:"BC:20:A4", n:"LG ELECTRONICS" },
+  { p:"00:0E:B8", n:"SONY ERICSSON MOBILE COMMUNICATIONS AB" },
+  { p:"00:12:78", n:"MICROSOFT CORPORATION" },
+  { p:"00:1D:D8", n:"MICROSOFT CORPORATION" },
+  { p:"04:4C:EF", n:"XIAOMI COMMUNICATIONS" },
+  { p:"28:44:30", n:"XIAOMI INC." },
+  { p:"4C:AF:78", n:"XIAOMI INC." },
+  { p:"68:DF:DD", n:"XIAOMI INC." },
+  { p:"80:C6:CA", n:"XIAOMI INC." },
+  { p:"8C:BE:BE", n:"XIAOMI INC." },
+  { p:"94:EB:2C", n:"GOOGLE INC." },
+  { p:"A4:77:33", n:"GOOGLE" },
+  { p:"F4:F5:D8", n:"GOOGLE INC." },
+  // ── add more vendors below this line ──
+  // { p:"XX:XX:XX", n:"VENDOR NAME" },
+];
+
+// ── State ────────────────────────────────────────────────────
+let selectedPool = []; // array of { p, n }
+let currentQty = 100;
+
+// ── Render vendor list ───────────────────────────────────────
+function filterVendors() {
+  const q = document.getElementById('vendor-search').value.trim().toLowerCase();
+  const filtered = q ? VENDORS.filter(v =>
+    v.n.toLowerCase().includes(q) || v.p.toLowerCase().includes(q)
+  ) : VENDORS;
+  renderVendorList(filtered);
+}
+
+function renderVendorList(list) {
+  const el = document.getElementById('vendor-list');
+  el.innerHTML = list.map((v, i) => {
+    const sel = selectedPool.some(s => s.p === v.p);
+    return `<div class="vendor-item ${sel?'selected':''}" onclick="toggleVendor('${v.p}','${v.n}')">
+      <span class="vendor-prefix">${v.p}</span>
+      <span class="vendor-name">${v.n}</span>
+      <span class="checkmark">✓</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleVendor(prefix, name) {
+  const idx = selectedPool.findIndex(s => s.p === prefix);
+  if (idx >= 0) {
+    selectedPool.splice(idx, 1);
+  } else {
+    selectedPool.push({ p: prefix, n: name });
+  }
+  filterVendors();
+  renderPool();
+}
+
+// ── Render pool ──────────────────────────────────────────────
+function renderPool() {
+  const el = document.getElementById('pool-list');
+  if (selectedPool.length === 0) {
+    el.innerHTML = '<div class="empty-pool">no vendors selected — click vendors on the left</div>';
+    return;
+  }
+  el.innerHTML = selectedPool.map(v =>
+    `<span class="pool-tag">
+      <span>${v.p} — ${v.n}</span>
+      <button onclick="toggleVendor('${v.p}','${v.n}')">✕</button>
+    </span>`
+  ).join('');
+}
+
+// ── Quantity ─────────────────────────────────────────────────
+function setQty(n, btn) {
+  currentQty = n;
+  document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('custom-qty').value = '';
+}
+
+function setCustomQty() {
+  const v = parseInt(document.getElementById('custom-qty').value);
+  if (v > 0) {
+    currentQty = v;
+    document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
+  }
+}
+
+// ── Random hex byte ──────────────────────────────────────────
+function rndHex() {
+  return Math.floor(Math.random() * 256).toString(16).padStart(2,'0').toUpperCase();
+}
+
+function macFromPrefix(prefix) {
+  return `${prefix}:${rndHex()}:${rndHex()}:${rndHex()}`;
+}
+
+// ── Generate ─────────────────────────────────────────────────
+function generate() {
+  const pool = selectedPool.length > 0 ? selectedPool : VENDORS;
+  const lines = [];
+
+  for (let i = 0; i < currentQty; i++) {
+    const vendor = pool[Math.floor(Math.random() * pool.length)];
+    lines.push(macFromPrefix(vendor.p));
+  }
+
+  // Shuffle (Fisher-Yates)
+  for (let i = lines.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [lines[i], lines[j]] = [lines[j], lines[i]];
+  }
+
+  const output = lines.join('\n');
+  document.getElementById('mac-output').textContent = output;
+  document.getElementById('stat-count').textContent = lines.length;
+  document.getElementById('stat-vendors').textContent = pool.length;
+  document.getElementById('output-panel').style.display = 'block';
+
+  // Reset copy button
+  const btn = document.getElementById('copy-btn');
+  btn.classList.remove('copied');
+  btn.textContent = '📋 Copy all — paste into data-macs';
+}
+
+// ── Copy ─────────────────────────────────────────────────────
+function copyToClipboard() {
+  const text = document.getElementById('mac-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied! Paste into data-macs';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = '📋 Copy all — paste into data-macs';
+    }, 3000);
+  });
+}
+
+// ── Init ─────────────────────────────────────────────────────
+renderVendorList(VENDORS);
+</script>
+</body>
+</html>

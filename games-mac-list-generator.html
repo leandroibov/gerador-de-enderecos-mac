@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAC Generator → Video Games</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --panel: #111418;
+    --border: #1e2530;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --text: #c8d8e8;
+    --muted: #4a5568;
+    --green: #00ff88;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  /* grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  header h1 span { color: var(--accent); }
+  header p {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media(max-width:640px){ .grid{ grid-template-columns:1fr; } }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Search */
+  .search-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  input[type=text], input[type=number] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 3px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus, input[type=number]:focus {
+    border-color: var(--accent);
+  }
+
+  /* Vendor list */
+  #vendor-list {
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .vendor-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.1s;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+  }
+  .vendor-item:hover { background: rgba(0,229,255,0.06); }
+  .vendor-item.selected { background: rgba(0,229,255,0.1); }
+  .vendor-prefix {
+    color: var(--accent);
+    min-width: 80px;
+  }
+  .vendor-name { color: var(--text); }
+  .checkmark {
+    margin-left: auto;
+    color: var(--green);
+    font-size: 0.9rem;
+    opacity: 0;
+  }
+  .vendor-item.selected .checkmark { opacity: 1; }
+
+  /* Pool */
+  #pool-list {
+    min-height: 60px;
+    max-height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .pool-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 3px;
+    padding: 0.25rem 0.5rem;
+    margin: 0.2rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+  .pool-tag button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 0;
+  }
+  .pool-tag button:hover { color: var(--accent2); }
+
+  .empty-pool {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding: 0.5rem;
+  }
+
+  /* Quantity */
+  .qty-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .qty-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .qty-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.08); }
+
+  .custom-qty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .custom-qty label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  input[type=number] { width: 100px; }
+
+  /* Generate button */
+  .btn-generate {
+    width: 100%;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 0.75rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.75rem;
+    text-transform: uppercase;
+  }
+  .btn-generate:hover { opacity: 0.85; }
+  .btn-generate:active { transform: scale(0.99); }
+  .btn-generate:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Output */
+  .output-panel {
+    margin-top: 1.5rem;
+    display: none;
+  }
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .output-stats {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .output-stats span { color: var(--green); }
+
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--green);
+    color: #000;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn-copy:hover { opacity: 0.85; }
+  .btn-copy.copied {
+    background: var(--accent2);
+  }
+
+  #mac-output {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text);
+    height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  /* Instructions */
+  .instructions {
+    margin-top: 1.5rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .instructions h3 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+  }
+  .step-num {
+    font-family: var(--mono);
+    color: var(--accent2);
+    min-width: 1.5rem;
+    font-size: 0.8rem;
+  }
+  .step code {
+    font-family: var(--mono);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  .step p { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>MAC Generator <span>→ Video Games</span></h1>
+    <p>// generate vendor mac lists for /etc/config/data-macs on OpenWrt</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT: Vendor picker -->
+    <div class="panel">
+      <div class="panel-title">01 — vendor database</div>
+      <div class="search-row">
+        <input type="text" id="vendor-search" placeholder="filter vendors... (apple, samsung, intel...)" oninput="filterVendors()">
+      </div>
+      <div id="vendor-list"></div>
+    </div>
+
+    <!-- RIGHT: Pool + Quantity + Generate -->
+    <div>
+      <div class="panel" style="margin-bottom:1rem">
+        <div class="panel-title">02 — selected pool</div>
+        <div id="pool-list">
+          <div class="empty-pool">no vendors selected — click vendors on the left</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">03 — quantity</div>
+        <div class="qty-row">
+          <button class="qty-btn" onclick="setQty(50,this)">50</button>
+          <button class="qty-btn active" onclick="setQty(100,this)">100</button>
+          <button class="qty-btn" onclick="setQty(200,this)">200</button>
+          <button class="qty-btn" onclick="setQty(500,this)">500</button>
+          <button class="qty-btn" onclick="setQty(1000,this)">1000</button>
+        </div>
+        <div class="custom-qty">
+          <label>custom:</label>
+          <input type="number" id="custom-qty" min="1" max="9999" placeholder="e.g. 300" oninput="setCustomQty()">
+        </div>
+
+        <button class="btn-generate" onclick="generate()">⚡ Generate MACs</button>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- Output -->
+  <div class="output-panel" id="output-panel">
+    <div class="output-header">
+      <div class="output-stats">generated: <span id="stat-count">0</span> MACs — <span id="stat-vendors">0</span> vendors</div>
+      <button class="btn-copy" id="copy-btn" onclick="copyToClipboard()">
+        📋 Copy all — paste into data-macs
+      </button>
+    </div>
+    <div id="mac-output"></div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="instructions">
+    <h3>// how to use</h3>
+    <div class="step">
+      <div class="step-num">1.</div>
+      <p>Select vendors from the list, set quantity, click <strong>Generate MACs</strong>.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2.</div>
+      <p>Click <strong>Copy all</strong> to copy the MAC list to clipboard.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3.</div>
+<p>Choose a file to paste for a MAC list: <code>or</code> select one MAC address, copy it, and paste it elsewhere to perform MAC spoofing with macchanger or manually using other tools.</p>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Vendor Database ─────────────────────────────────────────
+// To add more: push { p: "XX:XX:XX", n: "VENDOR NAME" } to VENDORS
+const VENDORS = [
+  { p:"00:09:BF", n:"NINTENDO CO., LTD." },
+  { p:"00:12:1F", n:"NINTENDO CO., LTD." },
+  { p:"00:15:4E", n:"NINTENDO CO., LTD." },
+  { p:"00:16:56", n:"NINTENDO CO., LTD." },
+  { p:"00:17:AB", n:"NINTENDO CO., LTD." },
+  { p:"00:18:DA", n:"NINTENDO CO., LTD." },
+  { p:"00:19:1D", n:"NINTENDO CO., LTD." },
+  { p:"00:19:FD", n:"NINTENDO CO., LTD." },
+  { p:"00:1A:69", n:"NINTENDO CO., LTD." },
+  { p:"00:1B:7A", n:"NINTENDO CO., LTD." },
+  { p:"00:1C:BE", n:"NINTENDO CO., LTD." },
+  { p:"00:1D:BC", n:"NINTENDO CO., LTD." },
+  { p:"00:1E:35", n:"NINTENDO CO., LTD." },
+  { p:"00:1E:8F", n:"NINTENDO CO., LTD." },
+  { p:"00:1F:32", n:"NINTENDO CO., LTD." },
+  { p:"00:21:47", n:"NINTENDO CO., LTD." },
+  { p:"00:22:4C", n:"NINTENDO CO., LTD." },
+  { p:"00:23:31", n:"NINTENDO CO., LTD." },
+  { p:"00:24:1E", n:"NINTENDO CO., LTD." },
+  { p:"00:24:44", n:"NINTENDO CO., LTD." },
+  { p:"00:24:F3", n:"NINTENDO CO., LTD." },
+  { p:"00:25:A0", n:"NINTENDO CO., LTD." },
+  { p:"00:26:59", n:"NINTENDO CO., LTD." },
+  { p:"00:27:09", n:"NINTENDO CO., LTD." },
+  { p:"28:10:7B", n:"NINTENDO CO., LTD." },
+  { p:"2C:10:C1", n:"NINTENDO CO., LTD." },
+  { p:"34:AF:2C", n:"NINTENDO CO., LTD." },
+  { p:"40:F4:07", n:"NINTENDO CO., LTD." },
+  { p:"58:BD:A3", n:"NINTENDO CO., LTD." },
+  { p:"6C:70:9F", n:"NINTENDO CO., LTD." },
+  { p:"78:A2:A0", n:"NINTENDO CO., LTD." },
+  { p:"8C:56:C5", n:"NINTENDO CO., LTD." },
+  { p:"8C:CD:E8", n:"NINTENDO CO., LTD." },
+  { p:"A4:5C:27", n:"NINTENDO CO., LTD." },
+  { p:"B8:AE:6E", n:"NINTENDO CO., LTD." },
+  { p:"CC:9E:00", n:"NINTENDO CO., LTD." },
+  { p:"D8:6B:F7", n:"NINTENDO CO., LTD." },
+  { p:"E0:0C:7F", n:"NINTENDO CO., LTD." },
+  { p:"E8:4E:CE", n:"NINTENDO CO., LTD." },
+  { p:"04:1C:BF", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"00:04:1F", n:"SONY COMPUTER ENTERTAINMENT, INC." },
+  { p:"00:13:15", n:"SONY COMPUTER ENTERTAINMENT INC," },
+  { p:"00:15:C1", n:"SONY COMPUTER ENTERTAINMENT INC," },
+  { p:"00:19:C5", n:"SONY COMPUTER ENTERTAINMENT INC," },
+  { p:"00:1D:0D", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"00:22:A6", n:"SONY COMPUTER ENTERTAINMENT AMERICA" },
+  { p:"28:0D:FC", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"70:9E:29", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"A8:E3:EE", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"F0:D0:AC", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"FC:0F:E6", n:"SONY COMPUTER ENTERTAINMENT INC." },
+  { p:"00:0C:F8", n:"NORTEL NETWORKS (XBOX)" },
+  { p:"00:1D:D8", n:"MICROSOFT CORPORATION (XBOX)" },
+  { p:"00:22:48", n:"MICROSOFT CORPORATION (XBOX)" },
+  { p:"00:25:AE", n:"MICROSOFT CORPORATION (XBOX)" },
+  { p:"08:00:2B", n:"MICROSOFT CORPORATION (XBOX)" },
+  { p:"28:18:78", n:"MICROSOFT CORPORATION (XBOX)" },
+  { p:"5C:F3:FC", n:"MICROSOFT CORPORATION (XBOX)" },
+  { p:"7C:ED:8D", n:"MICROSOFT (XBOX)" },
+  { p:"DC:B4:C4", n:"MICROSOFT XCG (XBOX)" },
+  { p:"00:25:F0", n:"SEGA CORPORATION" },
+  { p:"00:0D:F2", n:"SEGA CORPORATION" },
+  { p:"00:15:5E", n:"MICROSOFT CORPORATION (XBOX 360)" },
+  { p:"00:0D:3A", n:"MICROSOFT CORP. (XBOX 360)" },
+  { p:"00:24:9F", n:"RIM TESTING SERVICES" },
+  { p:"00:20:5A", n:"NVIDIA CORPORATION" },
+  { p:"00:0B:5B", n:"NVIDIA CORPORATION" },
+  { p:"00:0E:3A", n:"NVIDIA CORPORATION" },
+  { p:"00:14:AF", n:"NVIDIA CORPORATION" },
+  { p:"00:1B:24", n:"NVIDIA CORPORATION" },
+  { p:"00:1D:E1", n:"NVIDIA CORPORATION" },
+  { p:"00:22:FA", n:"NVIDIA CORPORATION" },
+  { p:"04:4B:FF", n:"NVIDIA CORPORATION" },
+  { p:"D8:FC:93", n:"NVIDIA CORPORATION" },
+  { p:"00:04:4B", n:"NVIDIA" },
+  { p:"00:50:8C", n:"NVIDIA" },
+  { p:"00:1C:4C", n:"ATI TECHNOLOGIES INC." },
+  { p:"00:06:BB", n:"ATI TECHNOLOGIES INC." },
+  // ── add more vendors below this line ──
+  // { p:"XX:XX:XX", n:"VENDOR NAME" },
+];
+
+// ── State ────────────────────────────────────────────────────
+let selectedPool = []; // array of { p, n }
+let currentQty = 100;
+
+// ── Render vendor list ───────────────────────────────────────
+function filterVendors() {
+  const q = document.getElementById('vendor-search').value.trim().toLowerCase();
+  const filtered = q ? VENDORS.filter(v =>
+    v.n.toLowerCase().includes(q) || v.p.toLowerCase().includes(q)
+  ) : VENDORS;
+  renderVendorList(filtered);
+}
+
+function renderVendorList(list) {
+  const el = document.getElementById('vendor-list');
+  el.innerHTML = list.map((v, i) => {
+    const sel = selectedPool.some(s => s.p === v.p);
+    return `<div class="vendor-item ${sel?'selected':''}" onclick="toggleVendor('${v.p}','${v.n}')">
+      <span class="vendor-prefix">${v.p}</span>
+      <span class="vendor-name">${v.n}</span>
+      <span class="checkmark">✓</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleVendor(prefix, name) {
+  const idx = selectedPool.findIndex(s => s.p === prefix);
+  if (idx >= 0) {
+    selectedPool.splice(idx, 1);
+  } else {
+    selectedPool.push({ p: prefix, n: name });
+  }
+  filterVendors();
+  renderPool();
+}
+
+// ── Render pool ──────────────────────────────────────────────
+function renderPool() {
+  const el = document.getElementById('pool-list');
+  if (selectedPool.length === 0) {
+    el.innerHTML = '<div class="empty-pool">no vendors selected — click vendors on the left</div>';
+    return;
+  }
+  el.innerHTML = selectedPool.map(v =>
+    `<span class="pool-tag">
+      <span>${v.p} — ${v.n}</span>
+      <button onclick="toggleVendor('${v.p}','${v.n}')">✕</button>
+    </span>`
+  ).join('');
+}
+
+// ── Quantity ─────────────────────────────────────────────────
+function setQty(n, btn) {
+  currentQty = n;
+  document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('custom-qty').value = '';
+}
+
+function setCustomQty() {
+  const v = parseInt(document.getElementById('custom-qty').value);
+  if (v > 0) {
+    currentQty = v;
+    document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
+  }
+}
+
+// ── Random hex byte ──────────────────────────────────────────
+function rndHex() {
+  return Math.floor(Math.random() * 256).toString(16).padStart(2,'0').toUpperCase();
+}
+
+function macFromPrefix(prefix) {
+  return `${prefix}:${rndHex()}:${rndHex()}:${rndHex()}`;
+}
+
+// ── Generate ─────────────────────────────────────────────────
+function generate() {
+  const pool = selectedPool.length > 0 ? selectedPool : VENDORS;
+  const lines = [];
+
+  for (let i = 0; i < currentQty; i++) {
+    const vendor = pool[Math.floor(Math.random() * pool.length)];
+    lines.push(macFromPrefix(vendor.p));
+  }
+
+  // Shuffle (Fisher-Yates)
+  for (let i = lines.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [lines[i], lines[j]] = [lines[j], lines[i]];
+  }
+
+  const output = lines.join('\n');
+  document.getElementById('mac-output').textContent = output;
+  document.getElementById('stat-count').textContent = lines.length;
+  document.getElementById('stat-vendors').textContent = pool.length;
+  document.getElementById('output-panel').style.display = 'block';
+
+  // Reset copy button
+  const btn = document.getElementById('copy-btn');
+  btn.classList.remove('copied');
+  btn.textContent = '📋 Copy all — paste into data-macs';
+}
+
+// ── Copy ─────────────────────────────────────────────────────
+function copyToClipboard() {
+  const text = document.getElementById('mac-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied! Paste into data-macs';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = '📋 Copy all — paste into data-macs';
+    }, 3000);
+  });
+}
+
+// ── Init ─────────────────────────────────────────────────────
+renderVendorList(VENDORS);
+</script>
+</body>
+</html>
