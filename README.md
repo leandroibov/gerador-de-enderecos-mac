@@ -30,9 +30,12 @@ Copie e cole a localização do arquivo na barra do navegador para abrir:
 
 
 Ex: file:///home/seu_usuário/Downloads/mac-random.html 
+
 ou Digitando file:///home/ na barra de navegação, você poderá navegar até o arquivo mac-random.html onde você salvou! 
 Na parte inferior da página, você tem uma lista de MAC vendors para escolher, copiar e colar para gerar a lista de MACs na caixa de diálogo.
+
 🔒 Privacidade e Segurança
+
 Os MAC spoofados e gerados não são gravados em arquivos no PC para neutralizar ataques físicos forenses.
 Ao fechar o Mullvad, a geração de MACs não foi registrada no PC, impedindo a recuperação dos metadados.
 
