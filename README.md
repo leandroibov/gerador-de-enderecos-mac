@@ -35,7 +35,7 @@ Ao fechar o Mullvad, a geração de MACs não foi registrada no PC, impedindo a 
 
 Opção 2: Sistema Amnésico
 Abra o arquivo mac-random.html em um sistema amnésico como o Tails em PC separado. Ao desligar o Tails, tudo desaparece da memória RAM!
-```text
+```
 
 ## Versão de MAC spoofing de fabricante por categoria
 `Marcas selecionadas mais famosas e importantes para roteadores, smartphones, laptops, PCs e videogames.`
